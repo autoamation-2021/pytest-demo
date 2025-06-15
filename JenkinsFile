@@ -1,0 +1,3 @@
+bat 'python -m venv venv'
+bat 'venv\\Scripts\\pip install -r requirements.txt'
+bat 'venv\\Scripts\\pytest tests\\ --html=report.html --self-contained-html'
