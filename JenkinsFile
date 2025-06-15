@@ -1,3 +1,31 @@
-bat 'python -m venv venv'
-bat 'venv\\Scripts\\pip install -r requirements.txt'
-bat 'venv\\Scripts\\pytest tests\\ --html=report.html --self-contained-html'
+pipeline {
+    agent any
+
+    stages {
+        stage('Install Python & Dependencies') {
+            steps {
+                bat 'python -m venv venv'
+                bat 'venv\\Scripts\\pip install --upgrade pip'
+                bat 'venv\\Scripts\\pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Pytest') {
+            steps {
+                bat 'venv\\Scripts\\pytest tests\\ --html=tests\\reports\\automation-report-chrome.html --self-contained-html'
+            }
+        }
+
+        stage('Publish Report') {
+            steps {
+                publishHTML(target: [
+                    reportName: 'Pytest Report',
+                    reportDir: 'tests\\reports',
+                    reportFiles: 'automation-report-chrome.html',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true
+                ])
+            }
+        }
+    }
+}
